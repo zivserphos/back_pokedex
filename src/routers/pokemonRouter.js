@@ -19,23 +19,28 @@ const abilities = (abilities) => {
     return abilitiesNames
 }
 
+function generatePokemonDetails(pokemon) {
+    const pokemonDetails = {
+        name: pokemon.name,
+        height: pokemon.height,
+        weight: pokemon.weight,
+        types: types(pokemon.types),
+        front_pic: pokemon.sprites["front_default"],
+        back_pic: pokemon.sprites["back_default"],
+        abilities: abilities(pokemon.abilities)
+    }
+    return pokemonDetails;
+}
+
 router.get("/:query", (req, res) => {
     P.getPokemonByName(req.params.query) // with Promise
-    .then(function (pokemon) {
-      const pokemonDetails = {
-          name: pokemon.name,
-          height: pokemon.height,
-          weight: pokemon.weight,
-          types: types(pokemon.types),
-          front_pic: pokemon.sprites["front_default"],
-          back_pic: pokemon.sprites["back_default"],
-          abilities: abilities(pokemon.abilities)
-      }
-      res.json(pokemonDetails)
-    });
+    .then((pokemon) => res.json(generatePokemonDetails(pokemon)));
 });
 router.get("/get/:id", (req, res) => {
-  return res.json();
+  P.getPokemonById(req.params.query)
+  .then((pokemon) => res.json(generatePokemonDetails(pokemon)))
 });
+
+router.put("/")
 
 module.exports = router;
