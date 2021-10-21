@@ -1,0 +1,26 @@
+{
+  "name": "back_pokedex",
+  "version": "1.0.0",
+  "description": "build my own server pokedex",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zivserphos/back_pokedex.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zivserphos/back_pokedex/issues"
+  },
+  "homepage": "https://github.com/zivserphos/back_pokedex#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "nodemon": "^2.0.14",
+    "pokedex-promise-v2": "^3.3.2"
+  }
+}
