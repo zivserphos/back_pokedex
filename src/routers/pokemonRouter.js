@@ -32,8 +32,8 @@ function generatePokemonDetails(pokemon) {
     return pokemonDetails;
 }
 
-router.get("/:query", (req, res) => {
-    P.getPokemonByName(req.params.query) // with Promise
+router.get("/query", (req, res) => {
+    P.getPokemonByName(req.body.query) // with Promise
     .then((pokemon) => res.json(generatePokemonDetails(pokemon)));
 });
 router.get("/get/:id", (req, res) => {
