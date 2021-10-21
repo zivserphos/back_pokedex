@@ -20,7 +20,9 @@
   "homepage": "https://github.com/zivserphos/back_pokedex#readme",
   "dependencies": {
     "express": "^4.17.1",
-    "nodemon": "^2.0.14",
     "pokedex-promise-v2": "^3.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.14"
   }
 }

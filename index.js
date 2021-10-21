@@ -1,13 +1,11 @@
-var express = require('express');
-var app = express();
-var port = 8080;
-var Pokedex = require('pokedex-promise-v2');
-var P = new Pokedex();
+const express = require('express');
+const router = require('./src/routers/pokemonRouter')
+const app = express();
+const port = 8080;
 
-P.getPokemonByName('eevee') // with Promise
-.then(function(response) {
-  console.log(response.weight);
-})
+app.use(express.json)
+app.use("/pokemon" , router)
+
 
 // start the server
 app.listen(port, function() {
