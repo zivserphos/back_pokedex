@@ -1,7 +1,8 @@
 const express = require("express");
-const router = express.Router();
+const pokemonRouter = express.Router();
 const Pokedex = require("pokedex-promise-v2");
 const P = new Pokedex();
+
 
 const types = (types) => {
     let typeNames = [];
@@ -12,6 +13,7 @@ const types = (types) => {
 } 
 
 const abilities = (abilities) => {
+    console.log("ffff")
     let abilitiesNames = [];
     abilities.forEach((ability) => {
         abilitiesNames.push(ability.ability.name)
@@ -20,6 +22,7 @@ const abilities = (abilities) => {
 }
 
 function generatePokemonDetails(pokemon) {
+    console.log(pokemon)
     const pokemonDetails = {
         name: pokemon.name,
         height: pokemon.height,
@@ -32,15 +35,21 @@ function generatePokemonDetails(pokemon) {
     return pokemonDetails;
 }
 
-router.get("/query", (req, res) => {
+pokemonRouter.get("/query", (req, res) => {
+    try {
+    console.log("123")
     P.getPokemonByName(req.body.query) // with Promise
     .then((pokemon) => res.json(generatePokemonDetails(pokemon)));
+    }
+    catch {
+        console.error("error")
+    }
 });
-router.get("/get/:id", (req, res) => {
+pokemonRouter.get("/get/:id", (req, res) => {
   P.getPokemonById(req.params.query)
   .then((pokemon) => res.json(generatePokemonDetails(pokemon)))
 });
 
-router.put("/")
+//pokemonRouter.put("/")
 
-module.exports = router;
+module.exports = pokemonRouter;
