@@ -1,10 +1,15 @@
+
 const express = require('express');
-const router = require('./src/routers/pokemonRouter')
 const app = express();
+const router = require('./src/routers/pokemonRouter')
+const handlePokemonReq = require("./handlers/handlePokemonReq")
+const handleUsersReq = require("./handlers/handleUsersReq")
 const port = 8080;
 
 app.use(express.json())
+app.use("/pokemon" , handlePokemonReq)
 app.use("/pokemon" , router)
+app.use("/users" , handleUsersReq)
 
 
 // start the server
