@@ -3,6 +3,7 @@ const pokemonRouter = express.Router();
 const Pokedex = require("pokedex-promise-v2");
 const P = new Pokedex();
 const fs = require("fs");
+const path = require("path");
 
 
 const types = (types) => {
@@ -49,17 +50,28 @@ pokemonRouter.get("/get/:id", (req, res) => {
 });
 
 pokemonRouter.put("/catch/:id" , (req ,res) => {
+    console.log(req.params)
     P.getPokemonByName(req.params.id).then((pokemon) => {
        const pokemonDetails = {
            pokemon: generatePokemonDetails(pokemon)
        } 
        fs.writeFileSync(req.headers.address , JSON.stringify(pokemonDetails))
+       res.send({body: "Pokemon had been catched"})
     })
 });
 
 pokemonRouter.delete("/release/:id" , (req,res) => {
-    console.log(req.headers)
+    //console.log(req.headers)
     fs.unlinkSync(req.headers.address)
+    res.send({body: "Pokemon is been released"})
+})
+
+pokemonRouter.get("/" , (req,res) => {
+    const pokemonArr = [];
+    fs.readdirSync(req.headers.address).forEach((pokemonFile) => {
+        pokemonArr.push(fs.readFile(`${req.headers,address}/${pokemonFile}`))
+    })
+    res.send({body: pokemonArr})
 })
 
 module.exports = pokemonRouter;
