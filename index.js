@@ -6,7 +6,7 @@ const handleUsersReq = require('./handlers/handleUsersReq');
 const port = 8080;
 
 app.use(express.json())
-//app.use("/pokemon/catch" , handleUsersReq)
+app.use("/pokemon/catch/:id" , handleUsersReq)
 app.use("/pokemon" , pokemonRouter)
 //app.use("/users" )
 

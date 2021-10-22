@@ -2,6 +2,7 @@ const express = require("express");
 const pokemonRouter = express.Router();
 const Pokedex = require("pokedex-promise-v2");
 const P = new Pokedex();
+const fs = require("fs");
 
 
 const types = (types) => {
@@ -13,7 +14,6 @@ const types = (types) => {
 } 
 
 const abilities = (abilities) => {
-    console.log("ffff")
     let abilitiesNames = [];
     abilities.forEach((ability) => {
         abilitiesNames.push(ability.ability.name)
@@ -22,7 +22,6 @@ const abilities = (abilities) => {
 }
 
 function generatePokemonDetails(pokemon) {
-    console.log(pokemon)
     const pokemonDetails = {
         name: pokemon.name,
         height: pokemon.height,
@@ -37,7 +36,6 @@ function generatePokemonDetails(pokemon) {
 
 pokemonRouter.get("/query", (req, res) => {
     try {
-    console.log("123")
     P.getPokemonByName(req.body.query) // with Promise
     .then((pokemon) => res.json(generatePokemonDetails(pokemon)));
     }
@@ -46,10 +44,22 @@ pokemonRouter.get("/query", (req, res) => {
     }
 });
 pokemonRouter.get("/get/:id", (req, res) => {
-  P.getPokemonById(req.params.query)
+  P.getPokemonByName(req.params.id)
   .then((pokemon) => res.json(generatePokemonDetails(pokemon)))
 });
 
-//pokemonRouter.put("/")
+pokemonRouter.put("/catch/:id" , (req ,res) => {
+    P.getPokemonByName(req.params.id).then((pokemon) => {
+       const pokemonDetails = {
+           pokemon: generatePokemonDetails(pokemon)
+       } 
+       fs.writeFileSync(req.headers.address , JSON.stringify(pokemonDetails))
+    })
+});
+
+pokemonRouter.delete("/release/:id" , (req,res) => {
+    //console.log(req.headers)
+    //fs.unlinkSync(req.headers.address)
+})
 
 module.exports = pokemonRouter;
