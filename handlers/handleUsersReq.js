@@ -9,13 +9,9 @@ function handleUsersReq(req , res , next) {
     if (!userName){
         return res.status(401).send("no user name")
     }
-    if (req.method === "GET") {
-        if (!fs.existsSync(`${usersPath}/${userName}`)) {
-            next()
-        }
 
-    }
     if (req.method === "PUT") {
+        console.log(req.params.id)
         if (!fs.existsSync(`${usersPath}/${userName}`)) {
             fs.mkdirSync(`${usersPath}/${userName}`)
         }
