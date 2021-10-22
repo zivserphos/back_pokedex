@@ -58,8 +58,8 @@ pokemonRouter.put("/catch/:id" , (req ,res) => {
 });
 
 pokemonRouter.delete("/release/:id" , (req,res) => {
-    //console.log(req.headers)
-    //fs.unlinkSync(req.headers.address)
+    console.log(req.headers)
+    fs.unlinkSync(req.headers.address)
 })
 
 module.exports = pokemonRouter;

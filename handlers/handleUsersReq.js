@@ -1,11 +1,12 @@
 const path = require("path")
 const fs = require("fs")
-const usersPath = "C:/Users/User/Music/תיקיית תכנות/back_pokedex/users"
+const usersPath = "C:/Users/zivfr/OneDrive/מסמכים/GitHub/back_pokedex/users"
 
 function handleUsersReq(req , res , next) {
     // check if this user exist, if not open new directory if it is exits add pokemon to his catches
     const userName = req.headers.username
     if (req.method !== "PUT" && req.method !== "DELETE") {
+        console.log("SFAfas")
         return;
     }
     if (req.method === "PUT") {
@@ -16,6 +17,7 @@ function handleUsersReq(req , res , next) {
             if (!fs.existsSync(`${usersPath}/${userName}`)) {
                 fs.mkdirSync(`${usersPath}/${userName}`)
             }
+            console.log("Exist")
             if (fs.existsSync(`${usersPath}/${userName}/${req.params.id}.json`)) {
                 throw {status: 403 , message: "pokemon already exists"}
             }
@@ -28,9 +30,11 @@ function handleUsersReq(req , res , next) {
     }
     console.log("z")
     if (req.method === "DELETE"){
+        console.log("Ssss")
         if (!fs.existsSync(`${usersPath}/${userName}/${req.params.id}.json`)) {
             throw {status: 403 , message: "THIS POKEMON IS NOT BEEN CATCHED"}
         }
+        req.headers.address = `${usersPath}/${userName}/${req.params.id}.json`
     }
     
     next()
