@@ -4,8 +4,8 @@ const Pokedex = require("pokedex-promise-v2");
 const P = new Pokedex();
 const fs = require("fs");
 const path = require("path");
+const usersPath = "C:/Users/User/Music/תיקיית תכנות/back_pokedex/users"
 
-console.log("@2")
 
 const types = (types) => {
     let typeNames = [];
@@ -37,7 +37,9 @@ function generatePokemonDetails(pokemon) {
 }
 
 pokemonRouter.get("/query", (req, res) => {
+    const userName = req.headers.username
     try {
+
     P.getPokemonByName(req.body.query) // with Promise
     .then((pokemon) => res.json(generatePokemonDetails(pokemon)));
     }
@@ -51,7 +53,17 @@ pokemonRouter.get("/get/:id", (req, res) => {
 });
 
 pokemonRouter.put("/catch/:id" , (req ,res) => {
-    console.log(req.params)
+    const userName = req.headers.username
+    if (!fs.existsSync(`${usersPath}/${userName}`)) {
+        fs.mkdirSync(`${usersPath}/${userName}`)
+    }
+    if (fs.existsSync(`${usersPath}/${userName}/${req.params.id}.json`)) {
+        return res.status(403).send("pokemon already exists")
+    }
+    else {
+        req.headers.address = `${usersPath}/${userName}/${req.params.id}.json`
+        fs.openSync(`${usersPath}/${userName}/${req.params.id}.json` , 'w+')
+    }
     P.getPokemonByName(req.params.id).then((pokemon) => {
        const pokemonDetails = {
            pokemon: generatePokemonDetails(pokemon)
@@ -62,17 +74,23 @@ pokemonRouter.put("/catch/:id" , (req ,res) => {
 });
 
 pokemonRouter.delete("/release/:id" , (req,res) => {
-    //console.log(req.headers)
+    const userName = req.headers.username
+    if (!fs.existsSync(`${usersPath}/${userName}/${req.params.id}.json`)) {
+        console.log("something is wrong")
+        return res.status(403).send("THIS POKEMON IS NOT BEEN CATCHED")
+    }
+    req.headers.address = `${usersPath}/${userName}/${req.params.id}.json`
     fs.unlinkSync(req.headers.address)
     res.send({body: "Pokemon is been released"})
 })
 
 pokemonRouter.get("/" , (req,res) => {
+    const userName = req.headers.username
     const pokemonArr = [];
-    fs.readdirSync(req.headers.address).forEach((pokemonFile) => {
-        pokemonArr.push(fs.readFile(`${req.headers,address}/${pokemonFile}`))
+    fs.readdirSync(`${usersPath}/${userName}`).forEach((pokemonFile) => {
+        pokemonArr.push(fs.readFileSync(`${usersPath}/${userName}/${pokemonFile}`).toString())
     })
-    res.send({body: pokemonArr})
+    res.send(pokemonArr)
 })
 
 module.exports = pokemonRouter;
