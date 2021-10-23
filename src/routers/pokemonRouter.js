@@ -4,7 +4,8 @@ const Pokedex = require("pokedex-promise-v2");
 const P = new Pokedex();
 const fs = require("fs");
 const path = require("path");
-const usersPath = "C:/Users/User/Music/תיקיית תכנות/back_pokedex/users";
+const usersPath = (`${__dirname.split("src")[0]}users`)
+
 
 const types = (types) => {
   let typeNames = [];
