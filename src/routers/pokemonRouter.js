@@ -56,25 +56,40 @@ pokemonRouter.get("/get/:id", async (req, res, next) => {
   }
 });
 
-pokemonRouter.put("/catch/:id", (req, res) => {
+function createDirAndFiles(req) {
   const userName = req.headers.username;
   if (!fs.existsSync(`${usersPath}/${userName}`)) {
     fs.mkdirSync(`${usersPath}/${userName}`);
   }
   if (fs.existsSync(`${usersPath}/${userName}/${req.params.id}.json`)) {
-    return res.status(403).send("pokemon already exists");
+    return true;
   } else {
     req.headers.address = `${usersPath}/${userName}/${req.params.id}.json`;
     fs.openSync(`${usersPath}/${userName}/${req.params.id}.json`, "w+");
   }
-  P.getPokemonByName(req.params.id).then((pokemon) => {
-    const pokemonDetails = {
-      pokemon: generatePokemonDetails(pokemon),
-    };
-    fs.writeFileSync(req.headers.address, JSON.stringify(pokemonDetails));
-    res.send({ body: "Pokemon had been catched" });
+}
+
+pokemonRouter.put("/catch/:id", async (req, res , next) => {
+    if (createDirAndFiles(req)) {
+      next({status: 403 ,  message: {error: "pokemon already exists"}})
+    }
+    try {
+      const pokemon = await P.getPokemonByName(req.params.id)
+      const pokemonDetails = {
+        pokemon: generatePokemonDetails(pokemon),
+      };
+      fs.writeFile(req.headers.address, JSON.stringify(pokemonDetails) , (req , res) => {
+        if (err) {
+          next({status: 403 ,  message: {error: "could not write file"}})
+        }
+      });
+      res.send({ body: "Pokemon had been catched" });
+    }
+    catch {
+
+    }
+  
   });
-});
 
 pokemonRouter.delete("/release/:id", (req, res) => {
   const userName = req.headers.username;
