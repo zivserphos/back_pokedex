@@ -69,37 +69,33 @@ function createDirAndFiles(req) {
   }
 }
 
-pokemonRouter.put("/catch/:id", async (req, res , next) => {
-    if (createDirAndFiles(req)) {
-      next({status: 403 ,  message: {error: "pokemon already exists"}})
+pokemonRouter.put("/catch/:id", async (req, res, next) => {
+  const pokemon = await P.getPokemonByName(req.params.id);
+  const pokemonDetails = {
+    pokemon: generatePokemonDetails(pokemon),
+  };
+  if (createDirAndFiles(req)) {
+    return next({ status: 403, message: { error: "pokemon already exists" } });
+  }
+  fs.writeFile(req.headers.address, JSON.stringify(pokemonDetails), (err) => {
+    if (err) {
+      next({ status: 403, message: { error: "could not write file" } });
     }
-    try {
-      const pokemon = await P.getPokemonByName(req.params.id)
-      const pokemonDetails = {
-        pokemon: generatePokemonDetails(pokemon),
-      };
-      fs.writeFile(req.headers.address, JSON.stringify(pokemonDetails) , (req , res) => {
-        if (err) {
-          next({status: 403 ,  message: {error: "could not write file"}})
-        }
-      });
-      res.send({ body: "Pokemon had been catched" });
-    }
-    catch {
-
-    }
-  
   });
+  res.send({ body: "Pokemon had been catched" });
+});
 
 pokemonRouter.delete("/release/:id", (req, res) => {
   const userName = req.headers.username;
   if (!fs.existsSync(`${usersPath}/${userName}/${req.params.id}.json`)) {
-    console.log("something is wrong");
-    return res.status(403).send("THIS POKEMON IS NOT BEEN CATCHED");
+    throw {
+      status: 403,
+      message: { error: "THIS POKEMON IS NOT BEEN CATCHED" },
+    };
   }
   req.headers.address = `${usersPath}/${userName}/${req.params.id}.json`;
   fs.unlinkSync(req.headers.address);
-  res.send({ body: "Pokemon is been released" });
+  return res.send({ body: "Pokemon is been released" });
 });
 
 pokemonRouter.get("/", (req, res) => {
@@ -110,7 +106,7 @@ pokemonRouter.get("/", (req, res) => {
       fs.readFileSync(`${usersPath}/${userName}/${pokemonFile}`).toString()
     );
   });
-  res.send(pokemonArr);
+  res.send({ body: pokemonArr });
 });
 
 module.exports = pokemonRouter;
