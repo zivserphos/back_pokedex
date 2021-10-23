@@ -93,9 +93,4 @@ pokemonRouter.get("/" , (req,res) => {
     res.send(pokemonArr)
 })
 
-pokemonRouter.post("/info" , (req,res) => {
-    const userName = req.headers.username
-    res.send(userName)
-})
-
 module.exports = pokemonRouter;
