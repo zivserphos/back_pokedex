@@ -111,11 +111,14 @@ pokemonRouter.get("/", (req, res) => {
 });
 
 pokemonRouter.get("/getPokemonsList/:limit/:offset" , async (req, res) => {
-  console.log("22")
   const interval  = {limit: req.params.limit , offset: req.params.offset}
   const pokemonList = await P.getPokemonsList(interval)
-  console.log(pokemonList)
   return res.send(pokemonList.results.map((result) => result.name));
 }) 
+
+pokemonRouter.get("/getTypeByName/:name" , async (req , res) => {
+  const pokemonsWithType = await P.getTypeByName(req.params.name)
+  return res.send(pokemonsWithType.pokemon.map((pokemon) => pokemon.pokemon.name))
+})
 
 module.exports = pokemonRouter;
