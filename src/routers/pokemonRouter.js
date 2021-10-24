@@ -61,8 +61,14 @@ pokemonRouter.get("/get/:id", async (req, res, next) => {
 function createDirAndFiles(req) {
   const userName = req.headers.username;
   if (!fs.existsSync(`${usersPath}/${userName}`)) {
-    fs.mkdirSync(`${usersPath}/${userName}`);
+    try {
+      fs.mkdirSync(`${usersPath}/${userName}`)
+    }
+    catch (err){
+     throw {status:404 , message: "no Pokemons catched"}
   }
+}
+  
   if (fs.existsSync(`${usersPath}/${userName}/${req.params.id}.json`)) {
     return true;
   } else {
@@ -76,8 +82,13 @@ pokemonRouter.put("/catch/:id", async (req, res, next) => {
   const pokemonDetails = {
     pokemon: generatePokemonDetails(pokemon),
   };
-  if (createDirAndFiles(req)) {
-    return next({ status: 403, message: { error: "pokemon already exists" } });
+  try {
+    if (createDirAndFiles(req)) {
+      return next({ status: 403, message: { error: "pokemon already exists" } });
+    }
+  }
+  catch(err) {
+    next({status:404 , message: err.message})
   }
   fs.writeFile(req.headers.address, JSON.stringify(pokemonDetails), (err) => {
     if (err) {
