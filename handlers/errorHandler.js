@@ -1,6 +1,5 @@
 function errorHandler(err , req , res , next) {
     if (!err.status) {
-        console.log("2222")
         res.status = 500
         return res.send(err)
     }

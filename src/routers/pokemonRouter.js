@@ -6,7 +6,6 @@ const fs = require("fs");
 const path = require("path");
 const usersPath = (`${__dirname.split("src")[0]}users`)
 
-
 const types = (types) => {
   let typeNames = [];
   types.forEach((type) => {
@@ -29,14 +28,15 @@ function generatePokemonDetails(pokemon) {
     height: pokemon.height,
     weight: pokemon.weight,
     types: types(pokemon.types),
-    front_pic: pokemon.sprites["front_default"],
-    back_pic: pokemon.sprites["back_default"],
+    frontImg: pokemon.sprites["front_default"],
+    backImg: pokemon.sprites["back_default"],
     abilities: abilities(pokemon.abilities),
   };
   return pokemonDetails;
 }
 
 pokemonRouter.get("/query", async (req, res, next) => {
+
   if (!req.body.query) {
     next({ status: 400, message: { error: "Bad Pokemon Request" } });
   }
