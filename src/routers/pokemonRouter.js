@@ -31,6 +31,7 @@ function generatePokemonDetails(pokemon) {
     frontImg: pokemon.sprites["front_default"],
     backImg: pokemon.sprites["back_default"],
     abilities: abilities(pokemon.abilities),
+    id: pokemon.id
   };
   return pokemonDetails;
 }
@@ -120,5 +121,18 @@ pokemonRouter.get("/getTypeByName/:name" , async (req , res) => {
   const pokemonsWithType = await P.getTypeByName(req.params.name)
   return res.send(pokemonsWithType.pokemon.map((pokemon) => pokemon.pokemon.name))
 })
+
+pokemonRouter.get("/getPokedex" , (req , res) => {
+  let files = fs.readdirSync(`${usersPath}/${req.headers.username}`)
+  const pokemons = files.map((file) => pokemonName(file , req.headers.username))
+  res.send(pokemons)
+  
+})
+
+function pokemonName(jsonFile , username) {
+  const fileContent = (fs.readFileSync(`${usersPath}/${username}/${jsonFile}`))
+  const pokemon = JSON.parse(fileContent.toString())
+  return pokemon.pokemon.name
+}
 
 module.exports = pokemonRouter;
