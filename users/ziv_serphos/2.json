@@ -1,0 +1,1 @@
+{"pokemon":{"name":"ivysaur","height":10,"weight":130,"types":["grass","poison"],"frontImg":"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png","backImg":"https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/back/2.png","abilities":["overgrow","chlorophyll"],"id":2}}
