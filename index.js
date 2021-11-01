@@ -9,10 +9,6 @@ const errorHandler = require('./handlers/errorHandler');
 
 const port = process.env.PORT || 3000;
 
-app.use("/", express.static('./dist'));
-app.get('/',(req,res)=>{
-  res.sendFile(path.resolve('./dist/index.html'))
-})
 
 app.use(cors({origin: "*"}))
 app.use(express.json())
@@ -26,7 +22,8 @@ app.listen(port, function() {
   console.log('app started');
 });
 
-// route our app
-app.get('/', function(req, res) {
-  res.send('hello world!');
-});
+
+app.use("/", express.static('./dist'));
+app.get('/',(req,res)=>{
+  res.sendFile(path.resolve('./dist/index.html'))
+})
