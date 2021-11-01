@@ -31,6 +31,7 @@ function generatePokemonDetails(pokemon) {
     frontImg: pokemon.sprites["front_default"],
     backImg: pokemon.sprites["back_default"],
     abilities: abilities(pokemon.abilities),
+    id: pokemon.id
   };
   return pokemonDetails;
 }
@@ -60,8 +61,14 @@ pokemonRouter.get("/get/:id", async (req, res, next) => {
 function createDirAndFiles(req) {
   const userName = req.headers.username;
   if (!fs.existsSync(`${usersPath}/${userName}`)) {
-    fs.mkdirSync(`${usersPath}/${userName}`);
+    try {
+      fs.mkdirSync(`${usersPath}/${userName}`)
+    }
+    catch (err){
+     throw {status:404 , message: "no Pokemons catched"}
   }
+}
+  
   if (fs.existsSync(`${usersPath}/${userName}/${req.params.id}.json`)) {
     return true;
   } else {
@@ -75,8 +82,13 @@ pokemonRouter.put("/catch/:id", async (req, res, next) => {
   const pokemonDetails = {
     pokemon: generatePokemonDetails(pokemon),
   };
-  if (createDirAndFiles(req)) {
-    return next({ status: 403, message: { error: "pokemon already exists" } });
+  try {
+    if (createDirAndFiles(req)) {
+      return next({ status: 403, message: { error: "pokemon already exists" } });
+    }
+  }
+  catch(err) {
+    next({status:404 , message: err.message})
   }
   fs.writeFile(req.headers.address, JSON.stringify(pokemonDetails), (err) => {
     if (err) {
@@ -109,5 +121,29 @@ pokemonRouter.get("/", (req, res) => {
   });
   res.send({ body: pokemonArr });
 });
+
+pokemonRouter.get("/getPokemonsList/:limit/:offset" , async (req, res) => {
+  const interval  = {limit: req.params.limit , offset: req.params.offset}
+  const pokemonList = await P.getPokemonsList(interval)
+  return res.send(pokemonList.results.map((result) => result.name));
+}) 
+
+pokemonRouter.get("/getTypeByName/:name" , async (req , res) => {
+  const pokemonsWithType = await P.getTypeByName(req.params.name)
+  return res.send(pokemonsWithType.pokemon.map((pokemon) => pokemon.pokemon.name))
+})
+
+pokemonRouter.get("/getPokedex" , (req , res) => {
+  let files = fs.readdirSync(`${usersPath}/${req.headers.username}`)
+  const pokemons = files.map((file) => pokemonName(file , req.headers.username))
+  res.send(pokemons)
+  
+})
+
+function pokemonName(jsonFile , username) {
+  const fileContent = (fs.readFileSync(`${usersPath}/${username}/${jsonFile}`))
+  const pokemon = JSON.parse(fileContent.toString())
+  return pokemon.pokemon.name
+}
 
 module.exports = pokemonRouter;
