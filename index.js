@@ -7,7 +7,7 @@ const handleUsersReq = require('./handlers/handleUsersReq');
 const userRouter = require("./src/routers/userRouter")
 const errorHandler = require('./handlers/errorHandler');
 
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080;
 
 
 app.use(cors({origin: "*"}))

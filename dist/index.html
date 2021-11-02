@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">  
-    <title>AJAX1</title>
+    <title>POKEDEX</title>
     <link rel="stylesheet" href="styles.css">
     <meta name="description" content="Client-side app illustrating fetch and axios">
     <meta name="author" content="Denise Case">
@@ -17,7 +17,7 @@
 
 <script defer src="bundle.js"></script></head>
 <body class="d-flex flex-column sticky-footer-wrapper" id = "body">
-  <div class="modal" tabindex="-1" role="dialog" id = "showPokemonDetails">
+  <div class="modal" tabindex="-1" role="dialog" id = "showPokemonDetails" style = "display: none;">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-header">
@@ -53,6 +53,7 @@
           <span class="input-group-text text-white border-0" id="search-addon">
             <i class="fas fa-search"></i>
           </span>
+          </span>
         </form>
       </div>
     </nav>
@@ -79,6 +80,14 @@
     <span>
       <button type="button" class="btn btn-success" id = "previous" onclick="previousPokemons()">Previous</button>
       <button type="button" class="btn btn-success" onclick="nextPokemons()">Next</button>
+      <div class="btn-group dropup">
+        <button id = "userPokedex" type="button" class="btn btn-info dropdown-toggle" data-identify="pokedexList" onclick="showCloseList(event)">My pokedex</button>
+        <ul class="dropdown-menu" id = "pokedexList" data-display="none"></ul>
+      </div>
+      <div id = "username">
+        <input type="text" placeholder="enter username">
+        <button type = button id = "submit">submit</button>
+      </div>
     </span>
     </span>
   </div>
@@ -96,5 +105,6 @@
  
   <!-- add axios with cdn - still no build tools needed -->
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+      <script src="./index.js"></script>
 </body>
 </html>
